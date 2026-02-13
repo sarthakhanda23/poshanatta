@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POSHAN | Har Thali Mein Sehat</title>
+    <link rel="icon" type="image/png" href="logo1.png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* -----------------------------------------------------------
+           1. ROOT VARIABLES & RESET
+           ----------------------------------------------------------- */
+        :root {
+            /* Palette */
+            --bg-base: #f4efe6;
+            --bg-gradient-start: #f4efe6;
+            --bg-gradient-end: #e8ddcc;
+            --primary-olive: #2f3e2c;
+            --accent-gold: #c59b4d;
+            --accent-gold-light: #e0b666;
+            --text-body: #5b4636;
+            --text-light: #8c7b6d;
+            --whatsapp-green: #25D366;
+            --white: #ffffff;
+            
+            /* Spacing & Layout */
+            --container-width: 1200px;
+            --section-padding: 100px;
+            --border-radius: 12px;
+            
+            /* Typography */
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Lora', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--text-body);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* -----------------------------------------------------------
+           2. GRAIN TEXTURE, PARTICLES & UTILITIES
+           ----------------------------------------------------------- */
+        /* CSS-only grain effect using SVG filter encoded in data URI */
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Scroll Progress Bar */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(to right, var(--accent-gold), var(--accent-gold-light));
+            z-index: 2000;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 10px var(--accent-gold);
+        }
+
+        /* Ambient Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(197, 155, 77, 0.3);
+            border-radius: 50%;
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            from {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            to {
+                transform: translateY(-10vh) translateX(20px);
+                opacity: 0;
+            }
+        }
+
+        /* Section Soft Gradient Divider */
+        .section-divider {
+            height: 80px;
+            background: linear-gradient(to bottom, rgba(197,155,77,0.08), transparent);
+            width: 100%;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1; /* Ensure content sits above particles */
+        }
+
+        h1, h2, h3, h4 {
+            font-family: var(--font-heading);
+            color: var(--primary-olive);
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        a {
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        /* -----------------------------------------------------------
+           3. NAVIGATION
+           ----------------------------------------------------------- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 25px 0;
+            z-index: 1000;
+            transition: all 0.4s ease;
+        }
+
+        header.scrolled {
+            background: rgba(244, 239, 230, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 15px 0;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+        }
+
+        header.scrolled .logo-img {
+            height: 55px;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img {
+            height: 70px;
+            width: auto;
+            transition: transform 0.3s ease, height 0.4s ease;
+        }
+
+        .logo-img:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-links a {
+            color: var(--primary-olive);
+            margin-left: 30px;
+            font-size: 0.95rem;
+            letter-spacing: 0.02em;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--accent-gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* -----------------------------------------------------------
+           4. HERO SECTION
+           ----------------------------------------------------------- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding-top: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle parallax circle background */
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(197, 155, 77, 0.1) 0%, rgba(244, 239, 230, 0) 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: pulse-glow 8s infinite alternate;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(47, 62, 44, 0.05);
+            color: var(--primary-olive);
+            padding: 8px 24px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(197, 155, 77, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Shimmer effect on badge */
+        .status-badge::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
+            transform: skewX(-25deg);
+            animation: shimmer 3s infinite;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 span {
+            display: block;
+            font-size: 1.5rem;
+            font-family: var(--font-body);
+            font-style: italic;
+            color: var(--accent-gold);
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+
+        .hero-subtext {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 3rem auto;
+            color: var(--text-body);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 16px 36px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-olive);
+            color: var(--white);
+            border: 1px solid var(--primary-olive);
+            box-shadow: 0 10px 20px -5px rgba(47, 62, 44, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            background-color: #243022;
+            box-shadow: 0 0 15px var(--accent-gold),
+                        0 15px 30px -5px rgba(47, 62, 44, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-olive);
+            border: 1px solid var(--primary-olive);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(47, 62, 44, 0.05);
+            transform: translateY(-3px);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0.6;
+        }
+
+        .mouse {
+            width: 26px;
+            height: 40px;
+            border: 2px solid var(--primary-olive);
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .wheel {
+            width: 4px;
+            height: 4px;
+            background: var(--primary-olive);
+            border-radius: 50%;
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: scroll 2s infinite;
+        }
+
+        /* -----------------------------------------------------------
+           5. ABOUT SECTION
+           ----------------------------------------------------------- */
+        .section {
+            padding: var(--section-padding) 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        /* Decorative underline */
+        .section-title::after {
+            content: '❧';
+            display: block;
+            color: var(--accent-gold);
+            font-size: 1.5rem;
+            margin-top: 10px;
+            font-family: serif;
+        }
+
+        .about-text {
+            font-size: 1.15rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* -----------------------------------------------------------
+           6. PRODUCTS SECTION
+           ----------------------------------------------------------- */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            border: 1px solid rgba(197, 155, 77, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(47, 62, 44, 0.1);
+            border-color: var(--accent-gold);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--accent-gold);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary-olive);
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--accent-gold), transparent);
+            width: 80%;
+            margin: 15px auto;
+            opacity: 0.5;
+        }
+
+        .product-list {
+            list-style: none;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(0,0,0,0.05);
+            font-size: 0.95rem;
+        }
+
+        .product-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-name {
+            font-weight: 500;
+        }
+
+        .product-price {
+            color: var(--primary-olive);
+            font-weight: 700;
+            font-family: var(--font-heading);
+        }
+
+        .btn-sm {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* -----------------------------------------------------------
+           7. FEATURES & RATES
+           ----------------------------------------------------------- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+
+        .feature-item svg {
+            width: 40px;
+            height: 40px;
+            stroke: var(--accent-gold);
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+
+        .feature-item:hover svg {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .feature-title {
+            font-size: 1.1rem;
+            color: var(--primary-olive);
+        }
+
+        .rate-card {
+            background: var(--white);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            border: 1px solid rgba(47, 62, 44, 0.1);
+        }
+
+        .delivery-info {
+            display: flex;
+            justify-content: space-between;
+            background: #fcfbf9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-gold);
+        }
+
+        /* -----------------------------------------------------------
+           8. INSTAGRAM & FOOTER
+           ----------------------------------------------------------- */
+        .insta-section {
+            background-color: var(--primary-olive);
+            color: var(--bg-base);
+            text-align: center;
+        }
+
+        .insta-section h2 {
+            color: var(--bg-base);
+        }
+
+        .insta-section .btn {
+            background: var(--white);
+            color: var(--primary-olive);
+            border: none;
+        }
+
+        footer {
+            background-color: #243022; /* Darker olive */
+            color: rgba(255,255,255,0.7);
+            padding: 60px 0 30px 0;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .footer-logo {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--white);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .footer-contact a {
+            color: var(--accent-gold);
+            display: block;
+            margin: 10px 0;
+        }
+
+        .copyright {
+            margin-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            font-size: 0.8rem;
+        }
+
+        /* -----------------------------------------------------------
+           9. ANIMATIONS & FLOATING ELEMENTS
+           ----------------------------------------------------------- */
+        .float-wa {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--whatsapp-green);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+            z-index: 999;
+            transition: transform 0.3s;
+            animation: float-pulse 3s infinite;
+        }
+
+        .float-wa svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+        }
+
+        .float-wa:hover {
+            transform: scale(1.1);
+        }
+
+        /* Scroll To Top Button */
+        #scrollTopBtn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary-olive);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        #scrollTopBtn.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        #scrollTopBtn:hover {
+            background-color: var(--accent-gold);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes scroll {
+            0% { top: 8px; opacity: 1; }
+            100% { top: 24px; opacity: 0; }
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 200%; }
+        }
+
+        @keyframes pulse-glow {
+            from { transform: translate(-50%, -50%) scale(1); opacity: 0.1; }
+            to { transform: translate(-50%, -50%) scale(1.1); opacity: 0.2; }
+        }
+
+        @keyframes float-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+
+        /* Cinematic Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            filter: blur(4px);
+            transition: all 1s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+
+        /* Stagger delays */
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-300 { transition-delay: 0.3s; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.8rem; }
+            .nav-links { display: none; } /* Could add hamburger menu, keeping simple for single file */
+            .btn-group { flex-direction: column; width: 100%; }
+            .btn { width: 100%; justify-content: center; }
+            .section-padding { padding: 60px 0; }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- 1. Scroll Progress Bar -->
+    <div id="progress-bar"></div>
+
+    <!-- Grain Overlay -->
+    <div class="grain-overlay"></div>
+    
+    <!-- 2. Ambient Particles Container -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <header id="navbar">
+        <div class="container nav-content">
+            <div class="logo-wrapper">
+                <!-- Using placeholder logic if image fails, but requesting logo1.png -->
+                <img src="logo1.png" alt="POSHAN Logo" class="logo-img" onerror="this.style.display='none'">
+            </div>
+            <nav class="nav-links">
+                <a href="#about">Our Story</a>
+                <a href="#products">Fresh Flours</a>
+                <a href="#rates">Delivery</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="status-badge reveal">
+                ✨ Grinding Today: Orders Open
+            </div>
+            <h1 class="reveal delay-100">
+                <span>Har Thali Mein Sehat</span>
+                Freshly Ground Atta<br>in Faridabad
+            </h1>
+            <p class="hero-subtext reveal delay-200">
+                Experience the taste of purity with premium wheat, millet, and specialty flours prepared fresh only when you order. No preservatives, just honest nutrition.
+            </p>
+            <div class="btn-group reveal delay-300">
+                <a href="https://wa.me/919990500455?text=Hi%20Poshan,%20I%20would%20like%20to%20order%20fresh%20atta." class="btn btn-primary" target="_blank">
+                    Order on WhatsApp <span>→</span>
+                </a>
+                <a href="#products" class="btn btn-secondary">
+                    View Products
+                </a>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2 class="section-title">Fresh Grinding. Honest Nutrition.</h2>
+            </div>
+            <div class="about-text reveal delay-100">
+                <p>At POSHAN, we believe that flour shouldn't sit on a shelf for months. Real nutrition comes from freshness.</p>
+                <p>Based in Faridabad, we are a D2C brand dedicated to bringing the age-old tradition of <strong>Chakki Fresh Atta</strong> back to your kitchen. We source premium MP Sharbati wheat and ancient millets, grinding them only after receiving your order. This ensures that the essential nutrients, natural oils, and sweet earthy aroma of the grain remain intact.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Products Section -->
+    <section id="products" class="section" style="background-color: #f9f6f2;">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2 class="section-title">Our Collections</h2>
+                <p>Ground fresh specifically for your order</p>
+            </div>
+
+            <div class="product-grid">
+                
+                <!-- Premium Wheat -->
+                <div class="product-card reveal delay-100">
+                    <div class="card-icon">🌾</div>
+                    <h3 class="card-title">Premium Wheat</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-light);">Golden MP Sharbati grains</p>
+                    <div class="divider"></div>
+                    <ul class="product-list">
+                        <li class="product-item">
+                            <span class="product-name">1 Kg Pack</span>
+                            <span class="product-price">₹60</span>
+                        </li>
+                        <li class="product-item">
+                            <span class="product-name">5 Kg Pack</span>
+                            <span class="product-price">₹300</span>
+                        </li>
+                        <li class="product-item">
+                            <span class="product-name">10 Kg Pack</span>
+                            <span class="product-price">₹600</span>
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/919990500455?text=I%20want%20to%20order%20MP%20Sharbati%20Wheat" class="btn btn-primary btn-sm" target="_blank">Order Now</a>
+                </div>
+
+                <!-- Single Grain -->
+                <div class="product-card reveal delay-200">
+                    <div class="card-icon">🥣</div>
+                    <h3 class="card-title">Millet & Grains</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-light);">Gluten-free powerhouse</p>
+                    <div class="divider"></div>
+                    <ul class="product-list">
+                        <li class="product-item">
+                            <span class="product-name">Ragi (Finger Millet)</span>
+                            <span class="product-price">₹120/kg</span>
+                        </li>
+                        <li class="product-item">
+                            <span class="product-name">Jowar (Sorghum)</span>
+                            <span class="product-price">₹80/kg</span>
+                        </li>
+                        <li class="product-item">
+                            <span class="product-name">Bajra (Pearl Millet)</span>
+                            <span class="product-price">₹80/kg</span>
+                        </li>
+                        <li class="product-item">
+                            <span class="product-name">Makka (Corn)</span>
+                            <span class="product-price">₹80/kg</span>
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/919990500455?text=I%20want%20to%20order%20Millet%20Flour" class="btn btn-primary btn-sm" target="_blank">Order Now</a>
+                </div>
+
+                <!-- Dals -->
+                <div class="product-card reveal delay-300">
+                    <div class="card-icon">🫘</div>
+                    <h3 class="card-title">Protein Rich</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-light);">Pure dal flours</p>
+                    <div class="divider"></div>
+                    <ul class="product-list">
+                        <li class="product-item">
+                            <span class="product-name">Besan</span>
+                            <span class="product-price">₹130/kg</span>
+                        </li>
+                        <li class="product-item">
+                            <span class="product-name">Chana Sattu</span>
+                            <span class="product-price">₹120/kg</span>
+                        </li>
+                        <li class="product-item">
+                            <span class="product-name">Green Moong</span>
+                            <span class="product-price">₹120/500g</span>
+                        </li>
+                         <li class="product-item">
+                            <span class="product-name">Black Urad</span>
+                            <span class="product-price">₹120/500g</span>
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/919990500455?text=I%20want%20to%20order%20Dal%20Flour" class="btn btn-primary btn-sm" target="_blank">Order Now</a>
+                </div>
+
+                <!-- Special Blends -->
+                <div class="product-card reveal delay-100">
+                    <div class="card-icon">🥗</div>
+                    <h3 class="card-title">Healthy Blends</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-light);">Curated for health goals</p>
+                    <div class="divider"></div>
+                    <ul class="product-list">
+                        <li class="product-item">
+                            <span class="product-name">Gluten Free Mix</span>
+                            <span class="product-price">₹200/kg</span>
+                        </li>
+                        <li class="product-item">
+                            <span class="product-name">Diabetic Friendly</span>
+                            <span class="product-price">₹150/kg</span>
+                        </li>
+                        <li class="product-item">
+                            <span class="product-name">Oats + Ragi</span>
+                            <span class="product-price">₹100/500g</span>
+                        </li>
+                        <li class="product-item">
+                            <span class="product-name">Flaxseed Powder</span>
+                            <span class="product-price">₹120/500g</span>
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/919990500455?text=I%20want%20to%20order%20Health%20Blends" class="btn btn-primary btn-sm" target="_blank">Order Now</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Features Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2 class="section-title">Why Choose POSHAN?</h2>
+            </div>
+            <div class="features-grid">
+                <div class="feature-item reveal delay-100">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    <h4 class="feature-title">No Preservatives</h4>
+                </div>
+                <div class="feature-item reveal delay-200">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <h4 class="feature-title">Ground on Order</h4>
+                </div>
+                <div class="feature-item reveal delay-300">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    <h4 class="feature-title">Custom Blends</h4>
+                </div>
+                <div class="feature-item reveal delay-100">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                    <h4 class="feature-title">Faridabad Delivery</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Delivery Rates -->
+    <section id="rates" class="section" style="background-color: #f9f6f2;">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2 class="section-title">Delivery Rates</h2>
+            </div>
+            <div class="rate-card reveal">
+                <div class="delivery-info">
+                    <span>Within 5km</span>
+                    <strong>₹20</strong>
+                </div>
+                <div class="delivery-info">
+                    <span>Above 5km</span>
+                    <strong>₹50</strong>
+                </div>
+                <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-light);">
+                    We deliver across Faridabad, Haryana. Orders are usually processed within 24 hours to ensure maximum freshness.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Instagram Section -->
+    <section class="section insta-section">
+        <div class="container">
+            <h2 class="section-title reveal">See Our Fresh Grinding</h2>
+            <p class="reveal delay-100" style="color: rgba(255,255,255,0.8);">Follow us for daily updates, health tips, and behind-the-scenes.</p>
+            <a href="https://www.instagram.com/poshan.atta" target="_blank" class="btn reveal delay-200">
+                Follow @poshan.atta
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <span class="footer-logo">POSHAN</span>
+            <p>Har Thali Mein Sehat</p>
+            
+            <div class="footer-contact">
+                <a href="https://wa.me/919990500455">WhatsApp: +91 99905 00455</a>
+                <a href="https://www.instagram.com/poshan.atta">Instagram</a>
+            </div>
+
+            <div class="copyright">
+                &copy; 2026 Poshan Atta. Faridabad, Haryana. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- 3. Scroll To Top Button -->
+    <div id="scrollTopBtn">↑</div>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/919990500455?text=Hi%20Poshan,%20I%20want%20to%20place%20an%20order." class="float-wa" target="_blank" aria-label="Order on WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-8.683-2.031-.967-.272-.297-.471-.446-.918-.446-.445 0-.965.174-1.469.721-.504.546-1.928 1.884-1.928 4.594 0 2.71 1.983 5.328 2.256 5.698.272.371 3.864 5.955 9.497 8.356 3.844 1.638 4.628 1.313 5.438 1.229.81-.084 2.618-1.07 2.988-2.102.372-1.03.372-1.913.261-2.103z"/></svg>
+    </a>
+
+    <!-- Scripts -->
+    <script>
+        // 1. Navbar Glassmorphism Effect
+        const header = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // 2. Intersection Observer for Cinematic Reveal
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Only animate once
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 3. Smooth Scroll correction
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const headerOffset = 80;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth"
+                    });
+                }
+            });
+        });
+
+        // 4. Scroll Progress Bar
+        window.addEventListener("scroll", () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.body.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            document.getElementById("progress-bar").style.width = progress + "%";
+        });
+
+        // 5. Ambient Floating Particles
+        const particleContainer = document.getElementById("particles");
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement("div");
+            particle.classList.add("particle");
+            particle.style.left = Math.random() * 100 + "vw";
+            // Stagger animation starts and durations
+            particle.style.animationDuration = (15 + Math.random() * 25) + "s";
+            particle.style.animationDelay = Math.random() * 20 + "s";
+            // Randomize opacity slightly for depth
+            particle.style.opacity = (Math.random() * 0.3 + 0.1).toString();
+            particleContainer.appendChild(particle);
+        }
+
+        // 6. Scroll-To-Top Button Logic
+        const scrollBtn = document.getElementById("scrollTopBtn");
+
+        window.addEventListener("scroll", () => {
+            if (window.scrollY > 300) {
+                scrollBtn.classList.add("show");
+            } else {
+                scrollBtn.classList.remove("show");
+            }
+        });
+
+        scrollBtn.addEventListener("click", () => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    </script>
+</body>
+</html>
